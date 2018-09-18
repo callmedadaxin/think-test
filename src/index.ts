@@ -10,6 +10,6 @@ import './extend/response';
 import 'think-view';
 import 'think-cache';
 import 'think-session';
-import 'think-mongo'
+import '../typings/mongoose'
 
 export const think = ThinkJS.think;

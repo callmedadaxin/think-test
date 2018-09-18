@@ -1,6 +1,12 @@
 import { think } from 'thinkjs';
 export default class extends think.Controller {
-  rest = false
   __before() {
+  }
+  protected async safetyExcuteService(fn: any) {
+    try {
+      return await fn()
+    } catch (error) {
+      this.fail(-1, '服务器内部错误')
+    }
   }
 }

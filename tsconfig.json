@@ -11,7 +11,12 @@
         "baseUrl": ".",
         "paths": {
             "thinkjs": ["src/index"]
-        }
+        },
+        "typeRoots": [
+            "node_modules/@types",
+            // "node_modules/think-mongoose/index.d.ts",
+            "typings"
+        ]
     },
     "include": [
         "src/**/*.ts"

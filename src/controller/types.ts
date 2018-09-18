@@ -1,26 +1,47 @@
 import Base from './base.js';
 
 export default class extends Base {
-  rest = true
-
-  async indexAction() {
-    if (this.isGet) {
-      const types = await this.mongoose('types').getList()
-      this.success(types)
-    }
-    if (this.isPost) {
-      return await this.action('types', 'add')
-    }
+  /**
+   * 查询列表
+   */
+  public async indexAction() {
+    const types = await this.mongoose('types').getList()
+    this.success(types)
   }
-  async addAction () {
-    const type = this.ctx.post('name,desc')
+  /**
+   * 新增type
+   */
+  public async addAction () {
+    const type = this.post('name,desc')
 
-    try {
-      const result = await this.mongoose('types').add(type)
-      
-      this.success(result)
-    } catch (error) {
-      this.fail(-1, '服务器内部出错!')
-    }
+    const result = await this.safetyExcuteService(
+      () => this.mongoose('types').addItem(type)
+    )
+    this.success(result)
+  }
+  /**
+   * 删除
+   */
+  public async deleteAction () {
+    const id = this.post('id')
+
+    const result = await this.safetyExcuteService(
+      () => this.mongoose('types').deleteItem(id)
+    )
+    this.success(result)
+  }
+  /**
+   * 更新
+   */
+  public async updateAction() {
+    const { id, name, desc } = this.post('id,name,desc')
+
+    const result = await this.safetyExcuteService(
+      () => this.mongoose('types').updateItem(id, {
+        name,
+        desc
+      })
+    )
+    this.success(result)
   }
 }
