@@ -6,7 +6,7 @@ export default class extends think.Controller {
     try {
       return await fn()
     } catch (error) {
-      this.fail(-1, '服务器内部错误')
+      return this.fail(-1, '服务器内部错误')
     }
   }
 }
