@@ -1,0 +1,15 @@
+{
+  "apps": [{
+    "name": "think-blog",
+    "script": "production.js",
+    "cwd": "/Users/wangxiaoxin/Desktop/think-blog",
+    "exec_mode": "fork",
+    "max_memory_restart": "1G",
+    "autorestart": true,
+    "node_args": [],
+    "args": [],
+    "env": {
+      
+    }
+  }]
+}
