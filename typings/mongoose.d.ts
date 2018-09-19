@@ -21,7 +21,6 @@ declare namespace ThinkMongoose {
   interface ModelExtend {
     mongoose(name: string, config?: any, module?: string): ThinkMongoose.MongooseModel;
   }
-
 }
 
 declare module 'thinkjs' {
