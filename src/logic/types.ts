@@ -12,7 +12,7 @@ export default class extends Base {
       }
     })
     return isParamsOk
-      ? await this.validateHasItemExist({
+      ? await this.validateHasItemExist('types', {
         name: this.post('name')
       })
       : isParamsOk

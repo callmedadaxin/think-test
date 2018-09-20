@@ -16,8 +16,8 @@ export default class extends think.Logic {
     }
     return true
   }
-  protected async validateHasItemExist (query: object = {}) {
-    const has = await this.mongoose('types').findOne(query)
+  protected async validateHasItemExist (modelName: string, query: object = {}) {
+    const has = await this.mongoose(modelName).findOne(query)
     if (has) {
       return this.fail(
         this.config('validateDefaultErrno'),
