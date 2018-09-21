@@ -2,6 +2,8 @@ import { think } from 'thinkjs';
 import { ITag } from './tags'
 import { IType } from './types';
 import { Schema } from 'mongoose'
+const mongoosePaginate = require('mongoose-paginate')
+// import mongoosePaginate from 
 
 export interface IArticle {
   id: string,
@@ -32,6 +34,17 @@ export interface IArticle {
 
   // 分类
   type: IType
+}
+
+export interface IListOptions {
+  select?: string,
+  sort?: object,
+  populate?: object[] | object | string
+}
+
+export interface IGetListPageOptions extends IListOptions {
+  page: number,
+  limit: number
 }
 
 export default class extends think.Mongoose {
@@ -79,26 +92,107 @@ export default class extends think.Mongoose {
         ref: `${this.tablePrefix}types`
       }
     })
+    // 兼容think populate
     think.mongoose('types')
     think.mongoose('tags')
+
+    // 翻页插件
+    schema.plugin(mongoosePaginate)
     return schema
   }
   /**
-   * get type list
+   * 获取列表
    */
-  public getList (query: object = {}) {
+  public getList (query: object = {}, options: IListOptions) {
+    const {
+      select = 'title desc type tag create_at update_at',
+      sort = {
+        create_at: -1
+      },
+      populate = [{
+        path: 'tag',
+        select: '_id name'
+      }, {
+        path: 'type',
+        select: '_id name'
+      }],
+      aggregate = []
+    } = options
+
     return this.find({
       ...query,
       status: 1
-    }, 'title desc type tag create_at update_at')
-    .populate({
-      path: 'tag',
-      select: '_id name'
+    }, select)
+    .sort(sort)
+    .populate(populate)
+  }
+  /**
+   * 分页获取文章列表
+   * @param query 查询query
+   * @param options 分页参数
+   */
+  public getListByPage (query: object = {}, options: IGetListPageOptions) {
+    const {
+      select = 'title desc type tag create_at update_at',
+      sort = {
+        create_at: -1
+      },
+      populate = [{
+        path: 'tag',
+        select: '_id name'
+      }, {
+        path: 'type',
+        select: '_id name'
+      }],
+      page = 1,
+      limit = 10
+    } = options
+
+    return this.paginate({
+      ...query,
+      status: 1
+    }, {
+      select,
+      sort,
+      populate,
+      page,
+      limit
     })
-    .populate({
-      path: 'type',
-      select: '_id name'
-    })
+  }
+  /**
+   * 获取归档信息
+   */
+  public getArchiveList() {
+    return this.aggregate([{
+      $project: {
+        _id: '$_id',
+        year: { $dateToString: { format: "%Y", date: "$create_at" } },
+        time: { $dateToString: { format: "%Y-%m-%d", date: "$create_at" } },
+        title: '$title',
+      }
+    }, {
+      $sort: {
+        time: -1
+      }
+    }, {
+      $project: {
+        year: '$year',
+        data: {
+          _id: '$_id',
+          title: '$title',
+          time: '$time'
+        }
+      }
+    }, {
+      $group: {
+        _id: '$year',
+        list: {$push: '$data'},
+      }
+    }, {
+      $sort: {
+        _id: -1
+      }
+    }])
   }
   /**
    * 获取文章详情

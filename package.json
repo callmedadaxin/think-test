@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.11",
+    "mongoose-paginate": "^5.0.3",
     "think-cache": "^1.0.7",
     "think-cache-file": "^1.0.8",
     "think-model": "^1.1.5",

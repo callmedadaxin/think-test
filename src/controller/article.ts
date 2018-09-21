@@ -1,11 +1,12 @@
 import Base from './base.js';
-import ArticleModel, { IArticle } from '../model/article'
+import ArticleModel, { IArticle, IListOptions } from '../model/article'
 
 interface IQuery {
-  title?: string,
+  sort?: object,
   tag?: string,
-  type?: string
+  type?: string,
 }
+
 export default class extends Base {
   /**
    * 获取article model
@@ -18,19 +19,56 @@ export default class extends Base {
    */
   public async indexAction() {
     const articleModel = this.getArticleModel()
-    const params: IQuery = this.get()
-    let query: IQuery = {}
+    const {
+      tag = '',
+      type = '',
+      current_page = 1,
+      page_size = 10
+    } = this.get()
 
-    if (params.tag) {
-      query.tag = params.tag
+    let query: IQuery = {}
+    let options = {
+      page: Number(current_page),
+      limit: Number(page_size)
     }
-    if (params.type) {
-      query.type = params.type
+
+    if (tag) query.tag = tag
+    if (type) query.type = type
+
+    const article = await this.safetyExcuteService(
+      () => articleModel.getListByPage(query, options)
+    )
+
+    this.success({
+      list: article.docs,
+      page: {
+        page: article.page,
+        limit: article.limit,
+        total: article.total,
+        pages: article.pages
+      }
+    })
+  }
+  public async allListAction () {
+    const articleModel = this.getArticleModel()
+    const query: IQuery = {}
+    const options: IListOptions = {
+      select: '_id title create_at',
+      populate: []
     }
-    if (params.title) {
-      query.title = params.title
-    }
-    const article = await articleModel.getList(query)
+
+    const article = await this.safetyExcuteService(
+      () => articleModel.getList(query, options)
+    )
+
+    this.success(article)
+  }
+  public async archiveAction () {
+    const articleModel = this.getArticleModel()
+    const article = await this.safetyExcuteService(
+      () => articleModel.getArchiveList()
+    )
+
     this.success(article)
   }
   /**
@@ -41,7 +79,9 @@ export default class extends Base {
       id: string
     } = this.get()
     const articleModel = this.getArticleModel()
-    const article = await articleModel.getItemDetail(params.id)
+    const article = await this.safetyExcuteService(
+      () => articleModel.getItemDetail(params.id)
+    )
     this.success(article)
   }
   /**

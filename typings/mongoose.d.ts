@@ -1,9 +1,7 @@
 
 import { Document, Schema, Model, model, connection } from 'mongoose'
 
-interface Base extends Document {
-  getList: any
-}
+interface Base extends Document {}
 
 declare namespace ThinkMongoose {
   interface MongooseModel extends Model<Base>{
