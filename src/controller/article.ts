@@ -88,7 +88,7 @@ export default class extends Base {
    * 新增type
    */
   public async addAction () {
-    const article: IArticle = this.post('title,desc,content,tag,type,create_at,update_at') as IArticle
+    const article: IArticle = this.post('title,desc,content,tag,type,create_at,update_at,thumb') as IArticle
     const articleModel: ArticleModel = this.getArticleModel()
 
     const result = await this.safetyExcuteService(

@@ -105,7 +105,7 @@ export default class extends think.Mongoose {
    */
   public getList (query: object = {}, options: IListOptions) {
     const {
-      select = 'title desc type tag create_at update_at',
+      select = 'title desc type tag create_at update_at thumb',
       sort = {
         create_at: -1
       },
@@ -115,8 +115,7 @@ export default class extends think.Mongoose {
       }, {
         path: 'type',
         select: '_id name'
-      }],
-      aggregate = []
+      }]
     } = options
 
     return this.find({
@@ -133,7 +132,7 @@ export default class extends think.Mongoose {
    */
   public getListByPage (query: object = {}, options: IGetListPageOptions) {
     const {
-      select = 'title desc type tag create_at update_at',
+      select = 'title desc type tag create_at update_at thumb',
       sort = {
         create_at: -1
       },
