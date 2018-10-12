@@ -5,8 +5,11 @@
   "author": "callmedadaxin <554091944@qq.com>",
   "scripts": {
     "start": "node development.js",
-    "compile": "tsc",
-    "lint": "tslint \"src/**/*.ts\""
+    "test": "THINK_UNIT_TEST=1 nyc ava test/ && nyc report --reporter=html",
+    "compile": "babel --no-babelrc src/ --presets think-node --out-dir app/",
+    "lint": "eslint src/",
+    "lint-fix": "eslint --fix src/",
+    "serve": "pm2 start pm2.json"
   },
   "dependencies": {
     "lodash": "^4.17.11",
@@ -24,15 +27,14 @@
     "thinkjs": "^3.2.3"
   },
   "devDependencies": {
-    "@types/koa": "*",
-    "@types/mongoose": "^5.2.15",
-    "@types/node": "^10.10.1",
+    "babel-cli": "^6.24.1",
+    "babel-preset-think-node": "^1.0.0",
     "node-notifier": "^5.0.2",
     "think-inspect": "0.0.2",
     "think-typescript": "^1.0.4",
     "think-watcher": "^3.0.0",
-    "tslint": "^5.8.0",
-    "typescript": "^2.5.3"
+    "eslint": "^4.2.0",
+    "eslint-config-think": "^1.0.0"
   },
   "repository": "",
   "license": "MIT",
@@ -44,10 +46,11 @@
     "metadata": {
       "name": "think-blog",
       "description": "application created by thinkjs",
-      "author": "callmedadaxin <554091944@qq.com>"
+      "author": "callmedadaxin <554091944@qq.com>",
+      "babel": true
     },
     "projectName": "think-blog",
-    "template": "typescript",
+    "template": "/usr/local/lib/node_modules/.think-cli_npminstall/node_modules/.think-cli@2.2.5/default_template",
     "clone": false,
     "isMultiModule": false
   }

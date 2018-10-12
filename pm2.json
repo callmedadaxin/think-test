@@ -4,7 +4,7 @@
     "script": "production.js",
     "cwd": "/Users/wangxiaoxin/Desktop/think-blog",
     "exec_mode": "fork",
-    "max_memory_restart": "1G",
+    "max_memory_restart": "256M",
     "autorestart": true,
     "node_args": [],
     "args": [],

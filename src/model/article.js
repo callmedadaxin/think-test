@@ -1,54 +1,9 @@
 import { think } from 'thinkjs';
-import { ITag } from './tags'
-import { IType } from './types';
-import { Schema } from 'mongoose'
-const mongoosePaginate = require('mongoose-paginate')
-// import mongoosePaginate from 
-
-export interface IArticle {
-  id: string,
-
-  // 文章标题
-  title: string,
-
-  // 描述
-  desc: string,
-
-  // 文章内容
-  content: string,
-
-  // 创建时间
-  create_at: Date,
-
-  // 修改时间
-  update_at: Date,
-
-  // 缩略图
-  thumb: string,
-
-  // 状态 1 发布 2 删除
-  status: number,
-
-  // 标签
-  tag: ITag[],
-
-  // 分类
-  type: IType
-}
-
-export interface IListOptions {
-  select?: string,
-  sort?: object,
-  populate?: object[] | object | string
-}
-
-export interface IGetListPageOptions extends IListOptions {
-  page: number,
-  limit: number
-}
+import { Schema } from 'mongoose';
+const mongoosePaginate = require('mongoose-paginate');
 
 export default class extends think.Mongoose {
-  get schema () {
+  get schema() {
     const schema = new Schema({
       // 文章标题
       title: String,
@@ -91,19 +46,19 @@ export default class extends think.Mongoose {
         type: Schema.Types.ObjectId,
         ref: `${this.tablePrefix}types`
       }
-    })
+    });
     // 兼容think populate
-    think.mongoose('types')
-    think.mongoose('tags')
+    think.mongoose('types');
+    think.mongoose('tags');
 
     // 翻页插件
-    schema.plugin(mongoosePaginate)
-    return schema
+    schema.plugin(mongoosePaginate);
+    return schema;
   }
   /**
    * 获取列表
    */
-  public getList (query: object = {}, options: IListOptions) {
+  getList(query = {}, options) {
     const {
       select = 'title desc type tag create_at update_at thumb',
       sort = {
@@ -116,21 +71,21 @@ export default class extends think.Mongoose {
         path: 'type',
         select: '_id name'
       }]
-    } = options
+    } = options;
 
     return this.find({
       ...query,
       status: 1
     }, select)
-    .sort(sort)
-    .populate(populate)
+      .sort(sort)
+      .populate(populate);
   }
   /**
    * 分页获取文章列表
    * @param query 查询query
    * @param options 分页参数
    */
-  public getListByPage (query: object = {}, options: IGetListPageOptions) {
+  getListByPage(query = {}, options) {
     const {
       select = 'title desc type tag create_at update_at thumb',
       sort = {
@@ -145,7 +100,7 @@ export default class extends think.Mongoose {
       }],
       page = 1,
       limit = 10
-    } = options
+    } = options;
 
     return this.paginate({
       ...query,
@@ -156,18 +111,18 @@ export default class extends think.Mongoose {
       populate,
       page,
       limit
-    })
+    });
   }
   /**
    * 获取归档信息
    */
-  public getArchiveList() {
+  getArchiveList() {
     return this.aggregate([{
       $project: {
         _id: '$_id',
-        year: { $dateToString: { format: "%Y", date: "$create_at" } },
-        time: { $dateToString: { format: "%Y-%m-%d", date: "$create_at" } },
-        title: '$title',
+        year: { $dateToString: { format: '%Y', date: '$create_at' } },
+        time: { $dateToString: { format: '%Y-%m-%d', date: '$create_at' } },
+        title: '$title'
       }
     }, {
       $sort: {
@@ -185,18 +140,18 @@ export default class extends think.Mongoose {
     }, {
       $group: {
         _id: '$year',
-        list: {$push: '$data'},
+        list: {$push: '$data'}
       }
     }, {
       $sort: {
         _id: -1
       }
-    }])
+    }]);
   }
   /**
    * 获取归档信息
    */
-  public getListGroupByTags() {
+  getListGroupByTags() {
     return this.aggregate([{
       $lookup: {
         from: 'tags',
@@ -221,35 +176,35 @@ export default class extends think.Mongoose {
           $push: '$data'
         }
       }
-    }])
+    }]);
   }
   /**
    * 获取文章详情
    */
-  public getItemDetail(id: string) {
+  getItemDetail(id) {
     return this.findById(id, {
       __v: false
-    })
+    });
   }
   /**
    * add item
    */
-  public addItem (article: IArticle) {
-    return this.create(article)
+  addItem(article) {
+    return this.create(article);
   }
   /**
    * delete Item
    * 仅更新状态，不进行物理删除
    */
-  public deleteItem(id: string) {
+  deleteItem(id) {
     return this.findByIdAndUpdate(id, {
       status: 0
-    })
+    });
   }
   /**
    * update Item
    */
-  public updateItem(id: string, article: object) {
-    return this.findByIdAndUpdate(id, article)
+  updateItem(id, article) {
+    return this.findByIdAndUpdate(id, article);
   }
 }

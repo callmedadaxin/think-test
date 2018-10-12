@@ -1,9 +1,9 @@
+import { think } from 'thinkjs';
 const fileCache = require('think-cache-file');
 const nunjucks = require('think-view-nunjucks');
 const fileSession = require('think-session-file');
 const path = require('path');
-import { think } from "thinkjs";
-const isDev = think.env === "development";
+const isDev = think.env === 'development';
 
 /**
  * cache adapter config
@@ -30,7 +30,7 @@ exports.model = {
   type: 'mongoose',
   common: {
     logConnect: isDev,
-    logger: (msg: string) => think.logger.info(msg)
+    logger: (msg) => think.logger.info(msg)
   },
   mongoose: {
     connectionString: 'mongodb://athon:athon1@176.122.181.218:27017/blog',
