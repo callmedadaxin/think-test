@@ -5,7 +5,7 @@
   "author": "callmedadaxin <554091944@qq.com>",
   "scripts": {
     "start": "node development.js",
-    "compile": "npm run lint && tsc",
+    "compile": "tsc",
     "lint": "tslint \"src/**/*.ts\""
   },
   "dependencies": {
