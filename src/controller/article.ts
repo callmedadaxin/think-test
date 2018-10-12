@@ -63,6 +63,20 @@ export default class extends Base {
 
     this.success(article)
   }
+  /**
+   * 文章归档
+   */
+  public async groupAction () {
+    const articleModel = this.getArticleModel()
+    const article = await this.safetyExcuteService(
+      () => articleModel.getListGroupByTags()
+    )
+
+    this.success(article)
+  }
+  /**
+   * 文章归档
+   */
   public async archiveAction () {
     const articleModel = this.getArticleModel()
     const article = await this.safetyExcuteService(

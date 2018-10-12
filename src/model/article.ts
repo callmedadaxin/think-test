@@ -194,6 +194,36 @@ export default class extends think.Mongoose {
     }])
   }
   /**
+   * 获取归档信息
+   */
+  public getListGroupByTags() {
+    return this.aggregate([{
+      $lookup: {
+        from: 'tags',
+        localField: 'tag',
+        foreignField: '_id',
+        as: 'tag'
+      }
+    }, {
+      $project: {
+        tag: '$tag.name',
+        data: {
+          _id: '$_id',
+          title: '$title'
+        }
+      }
+    }, {
+      $unwind: '$tag'
+    }, {
+      $group: {
+        _id: '$tag',
+        list: {
+          $push: '$data'
+        }
+      }
+    }])
+  }
+  /**
    * 获取文章详情
    */
   public getItemDetail(id: string) {
