@@ -33,7 +33,7 @@ exports.model = {
     logger: (msg) => think.logger.info(msg)
   },
   mongoose: {
-    connectionString: 'mongodb://athon:athon1@176.122.181.218:27017/blog',
+    connectionString: 'mongodb://helloathon:athon1@176.122.181.218:27017/blog',
     // connectionString: 'mongodb://test:test@localhost:27017/blog',
     options: {
       config: {
